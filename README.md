@@ -1,2 +1,2 @@
-# -asma-ul-husna.index.html
+# -asma-ul-husna
 names of Allah
