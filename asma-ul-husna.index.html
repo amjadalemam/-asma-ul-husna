@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Al-Asmā' al-Ḥusnā — The 99 Names</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0e2b27;
+    --ink-2:#123832;
+    --ink-3:#17423b;
+    --gold:#c9a24b;
+    --gold-soft:#e3c789;
+    --cream:#f4ecd8;
+    --sage:#8bab9c;
+    --line:rgba(244,236,216,0.14);
+    --amber:#c97d4b;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(201,162,75,0.10), transparent 60%),
+      radial-gradient(900px 500px at 100% 10%, rgba(139,171,156,0.08), transparent 55%),
+      var(--ink);
+    color:var(--cream);
+    font-family:'Newsreader', serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:28px 18px 80px;}
+  button{font-family:inherit;}
+
+  /* Header */
+  header{
+    text-align:center;
+    padding:26px 10px 22px;
+    position:relative;
+  }
+  .eyebrow{
+    font-family:'Inter',sans-serif;
+    font-size:11px;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:var(--sage);
+    margin-bottom:14px;
+  }
+  .title-ar{
+    font-family:'Amiri', serif;
+    font-size:clamp(34px,7vw,54px);
+    color:var(--gold-soft);
+    line-height:1.3;
+    margin:0 0 6px;
+  }
+  .title-en{
+    font-family:'Newsreader', serif;
+    font-weight:500;
+    font-style:italic;
+    font-size:clamp(15px,3vw,19px);
+    color:var(--cream);
+    opacity:0.85;
+    margin:0;
+    letter-spacing:0.01em;
+  }
+  .rule{
+    width:64px;height:1px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+    margin:20px auto;
+  }
+  .subnote{
+    font-family:'Inter',sans-serif;
+    font-size:12.5px;
+    color:var(--sage);
+    max-width:540px;
+    margin:0 auto;
+    line-height:1.6;
+  }
+
+  /* Mode toggle */
+  .mode-row{
+    display:flex;
+    justify-content:center;
+    gap:6px;
+    margin:20px 0 18px;
+  }
+  .mode-btn{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--sage);
+    font-family:'Inter',sans-serif;
+    font-size:12.5px;
+    letter-spacing:0.03em;
+    padding:9px 20px;
+    border-radius:2px;
+    cursor:pointer;
+    transition:all .18s;
+  }
+  .mode-btn:hover{border-color:var(--gold);color:var(--cream);}
+  .mode-btn.active{
+    background:rgba(201,162,75,0.14);
+    border-color:var(--gold);
+    color:var(--gold-soft);
+  }
+
+  /* Sticky controls */
+  .controls-sticky{
+    position:sticky;
+    top:0;
+    z-index:5;
+    padding:10px 0 4px;
+    background:linear-gradient(var(--ink) 82%, transparent);
+  }
+  .search-row{
+    display:flex;
+    gap:10px;
+    margin-bottom:12px;
+  }
+  .search-box{
+    flex:1;
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    border-radius:2px;
+    padding:12px 16px;
+    color:var(--cream);
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    outline:none;
+    transition:border-color .2s;
+  }
+  .search-box::placeholder{color:rgba(244,236,216,0.4);}
+  .search-box:focus{border-color:var(--gold);}
+
+  /* Category tabs */
+  .tabs-row{
+    display:flex;
+    gap:7px;
+    overflow-x:auto;
+    padding-bottom:8px;
+    scrollbar-width:thin;
+  }
+  .tabs-row::-webkit-scrollbar{height:4px;}
+  .tabs-row::-webkit-scrollbar-thumb{background:var(--line);}
+  .tab{
+    flex:0 0 auto;
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    color:var(--sage);
+    font-family:'Inter',sans-serif;
+    font-size:11.5px;
+    letter-spacing:0.02em;
+    padding:8px 14px;
+    border-radius:999px;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:all .18s;
+  }
+  .tab:hover{color:var(--cream);border-color:rgba(201,162,75,0.5);}
+  .tab.active{
+    background:rgba(201,162,75,0.16);
+    border-color:var(--gold);
+    color:var(--gold-soft);
+  }
+
+  .voice-status{
+    font-family:'Inter',sans-serif;
+    font-size:11px;
+    color:var(--sage);
+    text-align:center;
+    padding-top:2px;
+  }
+  .voice-status.warn{color:var(--gold-soft);}
+
+  /* Grid */
+  .count-row{
+    font-family:'Inter',sans-serif;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--sage);
+    margin:18px 0 14px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(220px,1fr));
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .card{
+    background:var(--ink);
+    padding:20px 18px 18px;
+    cursor:pointer;
+    position:relative;
+    transition:background .18s;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    min-height:150px;
+  }
+  .card:hover{background:var(--ink-2);}
+  .card.playing{background:rgba(201,162,75,0.10);}
+  .card .num{
+    font-family:'Inter',sans-serif;
+    font-size:10.5px;
+    color:var(--gold);
+    letter-spacing:0.06em;
+  }
+  .card .ar{
+    font-family:'Amiri', serif;
+    font-size:28px;
+    color:var(--gold-soft);
+    direction:rtl;
+    line-height:1.4;
+  }
+  .card .translit{
+    font-family:'Newsreader', serif;
+    font-style:italic;
+    font-size:15px;
+    color:var(--cream);
+    opacity:0.9;
+  }
+  .card .meaning{
+    font-family:'Inter',sans-serif;
+    font-size:12px;
+    color:var(--sage);
+    line-height:1.5;
+    margin-top:auto;
+  }
+  .icon-btn{
+    position:absolute;
+    top:16px;
+    width:22px;height:22px;
+    display:flex;align-items:center;justify-content:center;
+    opacity:0.35;
+    transition:opacity .18s, transform .18s;
+    background:none;
+    border:none;
+    padding:0;
+    cursor:pointer;
+  }
+  .icon-btn:hover{opacity:1;}
+  .play-icon{right:16px;}
+  .star-icon{right:44px;}
+  .card:hover .play-icon, .card.playing .play-icon{opacity:1;}
+  .star-icon.active{opacity:1;}
+  .star-icon.active:hover{transform:scale(1.1);}
+  .play-icon svg{width:12px;height:12px;fill:var(--gold);}
+  .star-icon svg{width:15px;height:15px;fill:none;stroke:var(--gold);stroke-width:1.5;}
+  .star-icon.active svg{fill:var(--gold);}
+
+  .empty{
+    text-align:center;
+    padding:60px 20px;
+    color:var(--sage);
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+  }
+
+  /* Flashcards */
+  #flashView{max-width:420px;margin:24px auto 0;}
+  .deck-meta{
+    text-align:center;
+    font-family:'Inter',sans-serif;
+    font-size:11.5px;
+    color:var(--sage);
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    margin-bottom:16px;
+  }
+  .flashcard{perspective:1400px;}
+  .fc-inner{
+    position:relative;
+    width:100%;
+    height:280px;
+    transform-style:preserve-3d;
+    transition:transform .5s cubic-bezier(.4,.2,.2,1);
+    cursor:pointer;
+  }
+  .fc-inner.flipped{transform:rotateY(180deg);}
+  .fc-face{
+    position:absolute;
+    inset:0;
+    backface-visibility:hidden;
+    -webkit-backface-visibility:hidden;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:16px;
+    padding:28px;
+    border:1px solid var(--line);
+    background:var(--ink-2);
+    text-align:center;
+  }
+  .fc-back{transform:rotateY(180deg);}
+  .fc-ar{font-family:'Amiri',serif;font-size:44px;color:var(--gold-soft);direction:rtl;}
+  .fc-hint{font-family:'Inter',sans-serif;font-size:11px;color:var(--sage);letter-spacing:0.06em;text-transform:uppercase;}
+  .fc-translit{font-family:'Newsreader',serif;font-style:italic;font-size:20px;color:var(--cream);}
+  .fc-meaning{font-family:'Inter',sans-serif;font-size:14px;color:var(--sage);line-height:1.6;max-width:300px;}
+  .fc-meaning-main{font-family:'Newsreader',serif;font-style:italic;font-weight:500;font-size:22px;color:var(--cream);line-height:1.5;max-width:320px;}
+  .fc-speak{
+    position:absolute;
+    top:16px;right:16px;
+    width:26px;height:26px;
+    display:flex;align-items:center;justify-content:center;
+    background:none;border:1px solid var(--line);border-radius:50%;
+    cursor:pointer;
+    opacity:0.6;
+  }
+  .fc-speak:hover{opacity:1;border-color:var(--gold);}
+  .fc-speak svg{width:11px;height:11px;fill:var(--gold);}
+  .fc-star{
+    position:absolute;
+    top:16px;left:16px;
+    width:26px;height:26px;
+    display:flex;align-items:center;justify-content:center;
+    background:none;border:1px solid var(--line);border-radius:50%;
+    cursor:pointer;
+    opacity:0.6;
+  }
+  .fc-star:hover{opacity:1;}
+  .fc-star svg{width:13px;height:13px;fill:none;stroke:var(--gold);stroke-width:1.5;}
+  .fc-star.active{opacity:1;}
+  .fc-star.active svg{fill:var(--gold);}
+
+  .fc-grading{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+  }
+  .fc-grading button{
+    flex:1;
+    padding:13px;
+    border-radius:2px;
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    cursor:pointer;
+    border:1px solid var(--line);
+    background:var(--ink-2);
+    color:var(--cream);
+    transition:all .18s;
+  }
+  #btnLearning:hover{border-color:var(--amber);color:var(--amber);}
+  #btnKnow{background:rgba(201,162,75,0.14);border-color:var(--gold);color:var(--gold-soft);}
+  #btnKnow:hover{background:rgba(201,162,75,0.24);}
+
+  .fc-controls{
+    display:flex;
+    justify-content:center;
+    gap:18px;
+    margin-top:16px;
+  }
+  .fc-controls button{
+    background:none;
+    border:none;
+    color:var(--sage);
+    font-family:'Inter',sans-serif;
+    font-size:12px;
+    cursor:pointer;
+    text-decoration:underline;
+    text-underline-offset:3px;
+  }
+  .fc-controls button:hover{color:var(--gold-soft);}
+
+  .fc-empty, .fc-done{
+    text-align:center;
+    padding:50px 20px;
+    color:var(--sage);
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    border:1px solid var(--line);
+    background:var(--ink-2);
+  }
+  .fc-done strong{color:var(--gold-soft);font-size:16px;display:block;margin-bottom:8px;font-family:'Newsreader',serif;font-weight:500;}
+
+  footer{
+    text-align:center;
+    margin-top:50px;
+    font-family:'Inter',sans-serif;
+    font-size:11px;
+    color:var(--sage);
+    opacity:0.7;
+    line-height:1.7;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .card, .icon-btn, .tab, .mode-btn{transition:none;}
+    .fc-inner{transition:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">99 Divine Names</div>
+    <div class="title-ar">أَسْمَاءُ اللهِ الْحُسْنَى</div>
+    <p class="title-en">Al-Asmā' al-Ḥusnā — the Most Beautiful Names</p>
+    <div class="rule"></div>
+    <p class="subnote">Tap a name to hear it pronounced, star it to save a favorite, or switch to Flashcards to test your memory.</p>
+  </header>
+
+  <div class="mode-row">
+    <button class="mode-btn active" data-mode="browse">Browse</button>
+    <button class="mode-btn" data-mode="flashcards">Flashcards</button>
+  </div>
+
+  <div class="controls-sticky">
+    <div class="search-row">
+      <input class="search-box" id="search" type="text" placeholder="Search a name or theme — e.g. &quot;mercy&quot;, &quot;forgiveness&quot;, &quot;Rahman&quot;…" autocomplete="off">
+    </div>
+    <div class="tabs-row" id="tabsRow"></div>
+    <div class="voice-status" id="voiceStatus"></div>
+  </div>
+
+  <div id="browseView">
+    <div class="count-row" id="countRow">Showing 99 of 99</div>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="emptyState" style="display:none;">No names match this search or category.</div>
+  </div>
+
+  <div id="flashView" style="display:none;">
+    <div class="deck-meta" id="deckMeta"></div>
+    <div class="flashcard">
+      <div class="fc-inner" id="fcInner">
+        <div class="fc-face fc-front">
+          <button class="fc-star" id="fcStarFront" aria-label="Toggle favorite"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg></button>
+          <div class="fc-meaning-main" id="fcMeaning"></div>
+          <div class="fc-hint">Tap to reveal the name</div>
+        </div>
+        <div class="fc-face fc-back">
+          <button class="fc-speak" id="fcSpeakBack" aria-label="Play pronunciation"><svg viewBox="0 0 12 12"><path d="M1 1l10 5-10 5V1z"/></svg></button>
+          <button class="fc-star" id="fcStarBack" aria-label="Toggle favorite"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg></button>
+          <div class="fc-ar" id="fcAr"></div>
+          <div class="fc-translit" id="fcTranslit"></div>
+        </div>
+      </div>
+    </div>
+    <div class="fc-grading" id="fcGrading" style="display:none;">
+      <button id="btnLearning">Still learning</button>
+      <button id="btnKnow">I know this</button>
+    </div>
+    <div class="fc-controls">
+      <button id="btnShuffle">Shuffle</button>
+      <button id="btnRestart">Restart deck</button>
+    </div>
+    <div class="fc-empty" id="fcEmpty" style="display:none;">No cards match this search or category.</div>
+    <div class="fc-done" id="fcDone" style="display:none;"></div>
+  </div>
+
+  <footer id="footerNote">
+    Pronunciation uses your device's Arabic text-to-speech voice, not a recorded reciter —<br>
+    quality depends on the voices installed on your device or browser.
+  </footer>
+</div>
+
+<script>
+const NAMES = [
+["Ar-Raḥmān","الرحمن","The Most Gracious"],
+["Ar-Raḥīm","الرحيم","The Most Merciful"],
+["Al-Malik","الملك","The King"],
+["Al-Quddūs","القدوس","The Most Holy"],
+["As-Salām","السلام","The Ultimate Provider of Peace"],
+["Al-Mu'min","المؤمن","The Guardian of Faith"],
+["Al-Muhaymin","المهيمن","The Guardian, the Preserver"],
+["Al-'Azīz","العزيز","The Almighty, the Self Sufficient"],
+["Al-Jabbār","الجبار","The Compeller"],
+["Al-Mutakabbir","المتكبر","The Dominant One"],
+["Al-Khāliq","الخالق","The Creator"],
+["Al-Bāri'","البارئ","The Maker"],
+["Al-Muṣawwir","المصور","The Fashioner of Forms"],
+["Al-Ghaffār","الغفار","The Ever-Forgiving"],
+["Al-Qahhār","القهار","The All-Subduer"],
+["Al-Wahhāb","الوهاب","The Bestower"],
+["Ar-Razzāq","الرزاق","The Ever-Providing, the Sustainer"],
+["Al-Fattāḥ","الفتاح","The Opener, the Victory-Giver"],
+["Al-'Alīm","العليم","The All-Knowing, the Omniscient"],
+["Al-Qābiḍ","القابض","The Restrainer, the Straightener"],
+["Al-Bāsiṭ","الباسط","The Expander, the Munificent"],
+["Al-Khāfiḍ","الخافض","The Abaser"],
+["Ar-Rāfi'","الرافع","The Exalter"],
+["Al-Mu'izz","المعز","The Giver of Honor"],
+["Al-Mudhill","المذل","The Giver of Dishonor"],
+["As-Samī'","السميع","The All-Hearing"],
+["Al-Baṣīr","البصير","The All-Seeing"],
+["Al-Ḥakam","الحكم","The Judge, the Ultimate Arbiter"],
+["Al-'Adl","العدل","The Utterly Just"],
+["Al-Laṭīf","اللطيف","The Subtly Kind, the Gentle"],
+["Al-Khabīr","الخبير","The All-Aware"],
+["Al-Ḥalīm","الحليم","The Forbearing, the Indulgent"],
+["Al-'Aẓīm","العظيم","The Magnificent, the Infinite"],
+["Al-Ghafūr","الغفور","The All-Forgiving"],
+["Ash-Shakūr","الشكور","The Grateful, the Appreciative"],
+["Al-'Alī","العلي","The Sublimely Exalted"],
+["Al-Kabīr","الكبير","The Great"],
+["Al-Ḥafīẓ","الحفيظ","The Preserver, the Protector"],
+["Al-Muqīt","المقيت","The Nourisher"],
+["Al-Ḥasīb","الحسيب","The Reckoner"],
+["Al-Jalīl","الجليل","The Majestic"],
+["Al-Karīm","الكريم","The Bountiful, the Generous"],
+["Ar-Raqīb","الرقيب","The Watchful"],
+["Al-Mujīb","المجيب","The Responsive, the Answerer"],
+["Al-Wāsi'","الواسع","The Vast, the All-Encompassing"],
+["Al-Ḥakīm","الحكيم","The Wise"],
+["Al-Wadūd","الودود","The Loving, the Affectionate"],
+["Al-Majīd","المجيد","The All-Glorious"],
+["Al-Bā'ith","الباعث","The Raiser of the Dead"],
+["Ash-Shahīd","الشهيد","The Witness"],
+["Al-Ḥaqq","الحق","The Truth, the Real"],
+["Al-Wakīl","الوكيل","The Trustee, the Dependable"],
+["Al-Qawī","القوي","The Strong"],
+["Al-Matīn","المتين","The Firm, the Steadfast"],
+["Al-Walī","الولي","The Protecting Friend and Patron"],
+["Al-Ḥamīd","الحميد","The All Praiseworthy"],
+["Al-Muḥṣī","المحصي","The Accounter, the Enumerator of All"],
+["Al-Mubdi'","المبدئ","The Originator, the Initiator"],
+["Al-Mu'īd","المعيد","The Reinstater Who Brings Back All"],
+["Al-Muḥyī","المحيي","The Giver of Life"],
+["Al-Mumīt","المميت","The Bringer of Death, the Destroyer"],
+["Al-Ḥayy","الحي","The Ever-Living"],
+["Al-Qayyūm","القيوم","The Self-Subsisting Sustainer of All"],
+["Al-Wājid","الواجد","The Perceiver, the Finder, the Unfailing"],
+["Al-Mājid","الماجد","The Illustrious, the Magnificent"],
+["Al-Wāḥid","الواحد","The One, the All-Inclusive, the Indivisible"],
+["Al-Aḥad","الأحد","The One, the Indivisible"],
+["Aṣ-Ṣamad","الصمد","The Everlasting, the Eternal Refuge"],
+["Al-Qādir","القادر","The All-Capable, the Most Powerful"],
+["Al-Muqtadir","المقتدر","The All-Determiner, the Dominant"],
+["Al-Muqaddim","المقدم","The Expediter, He Who Brings Forward"],
+["Al-Mu'akhkhir","المؤخر","The Delayer, He Who Brings Backward"],
+["Al-Awwal","الأول","The First"],
+["Al-Ākhir","الآخر","The Last"],
+["Aẓ-Ẓāhir","الظاهر","The Manifest, the All-Victorious"],
+["Al-Bāṭin","الباطن","The Hidden, the All-Encompassing"],
+["Al-Wālī","الوالي","The Patron, the Governor"],
+["Al-Muta'ālī","المتعالي","The Self-Exalted"],
+["Al-Barr","البر","The Most Kind and Righteous"],
+["At-Tawwāb","التواب","The Ever-Pardoning, Ever-Relenting"],
+["Al-Muntaqim","المنتقم","The Avenger"],
+["Al-'Afuw","العفو","The Pardoner, the Forgiver"],
+["Ar-Ra'ūf","الرؤوف","The Clement, the Compassionate, the All-Pitying"],
+["Mālik-ul-Mulk","مالك الملك","The Owner of All Sovereignty"],
+["Dhul-Jalāli wal-Ikrām","ذو الجلال والإكرام","The Lord of Majesty and Generosity"],
+["Al-Muqsiṭ","المقسط","The Equitable, the Requiter"],
+["Al-Jāmi'","الجامع","The Gatherer, the Unifier"],
+["Al-Ghanī","الغني","The All-Rich, the Independent"],
+["Al-Mughnī","المغني","The Enricher, the Emancipator"],
+["Al-Māni'","المانع","The Withholder, the Shielder, the Defender"],
+["Aḍ-Ḍārr","الضار","The Distresser"],
+["An-Nāfi'","النافع","The Propitious, the Benefactor"],
+["An-Nūr","النور","The Light"],
+["Al-Hādī","الهادي","The Guide"],
+["Al-Badī'","البديع","The Incomparable Originator"],
+["Al-Bāqī","الباقي","The Ever-Enduring and Immutable"],
+["Al-Wārith","الوارث","The Heir, the Inheritor of All"],
+["Ar-Rashīd","الرشيد","The Guide, the Infallible Teacher"],
+["Aṣ-Ṣabūr","الصبور","The Forbearing, the Most Patient"],
+];
+
+const CATEGORY_OF = ["mercy","mercy","majesty","eternal","providence","providence","providence","majesty","power","majesty","creation","creation","creation","mercy","power","providence","providence","justice","knowledge","justice","justice","justice","justice","justice","justice","knowledge","knowledge","justice","justice","mercy","knowledge","mercy","majesty","mercy","glory","majesty","majesty","providence","providence","knowledge","majesty","glory","knowledge","providence","majesty","knowledge","glory","glory","creation","knowledge","eternal","providence","power","power","providence","glory","knowledge","creation","creation","creation","creation","creation","creation","knowledge","glory","eternal","eternal","eternal","power","power","eternal","eternal","eternal","eternal","eternal","eternal","providence","majesty","mercy","mercy","justice","mercy","mercy","majesty","majesty","justice","providence","power","providence","providence","justice","providence","glory","knowledge","creation","eternal","eternal","knowledge","mercy"];
+
+const CATEGORY_META = [
+  {key:'all', label:'All'},
+  {key:'favorites', label:'★ Favorites'},
+  {key:'mercy', label:'Mercy & Compassion'},
+  {key:'majesty', label:'Majesty & Sovereignty'},
+  {key:'power', label:'Power & Might'},
+  {key:'knowledge', label:'Knowledge & Wisdom'},
+  {key:'creation', label:'Creation & Life'},
+  {key:'justice', label:'Justice & Balance'},
+  {key:'providence', label:'Providence & Care'},
+  {key:'glory', label:'Glory & Praise'},
+  {key:'eternal', label:'The Eternal & One'},
+];
+
+const grid = document.getElementById('grid');
+const searchBox = document.getElementById('search');
+const countRow = document.getElementById('countRow');
+const emptyState = document.getElementById('emptyState');
+const voiceStatus = document.getElementById('voiceStatus');
+const tabsRow = document.getElementById('tabsRow');
+const browseView = document.getElementById('browseView');
+const flashView = document.getElementById('flashView');
+const footerNote = document.getElementById('footerNote');
+
+let arabicVoice = null;
+let playingCard = null;
+let currentTab = 'all';
+let mode = 'browse';
+let favorites = new Set();
+let storageAvailable = true;
+
+/* ---------------- Favorites (persisted via artifact storage) ---------------- */
+
+async function loadFavorites(){
+  if(!window.storage){ storageAvailable = false; updateFooter(); return; }
+  try{
+    const res = await window.storage.get('favorites', false);
+    if(res && res.value) favorites = new Set(JSON.parse(res.value));
+  }catch(e){
+    // key not yet set — start with an empty favorites list
+  }
+  renderTabs();
+  if(mode === 'browse') render(searchBox.value); else buildDeck();
+}
+
+async function persistFavorites(){
+  if(!window.storage) return;
+  try{ await window.storage.set('favorites', JSON.stringify([...favorites]), false); }
+  catch(e){ storageAvailable = false; updateFooter(); }
+}
+
+function toggleFavorite(id){
+  if(favorites.has(id)) favorites.delete(id); else favorites.add(id);
+  persistFavorites();
+  renderTabs();
+  if(mode === 'browse') render(searchBox.value); else refreshFlashcardStar();
+}
+
+function updateFooter(){
+  if(!storageAvailable){
+    footerNote.innerHTML = "Pronunciation uses your device's Arabic text-to-speech voice, not a recorded reciter —<br>" +
+      "quality depends on the voices installed. Favorites are saved for this session only on this device.";
+  }
+}
+
+/* ---------------- Speech ---------------- */
+
+function pickArabicVoice(){
+  if(!('speechSynthesis' in window)) return;
+  const voices = speechSynthesis.getVoices();
+  arabicVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ar')) || null;
+  if(arabicVoice){
+    voiceStatus.textContent = `Using voice: ${arabicVoice.name}`;
+    voiceStatus.classList.remove('warn');
+  } else if(voices.length){
+    voiceStatus.textContent = 'No Arabic voice found on this device — pronunciation may sound off.';
+    voiceStatus.classList.add('warn');
+  }
+}
+if('speechSynthesis' in window){
+  pickArabicVoice();
+  speechSynthesis.onvoiceschanged = pickArabicVoice;
+} else {
+  voiceStatus.textContent = 'Speech synthesis is not supported in this browser.';
+  voiceStatus.classList.add('warn');
+}
+
+function speak(arabicText, highlightEl){
+  if(!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(arabicText);
+  utter.lang = 'ar-SA';
+  if(arabicVoice) utter.voice = arabicVoice;
+  utter.rate = 0.75;
+  utter.pitch = 1;
+
+  if(playingCard) playingCard.classList.remove('playing');
+  if(highlightEl){ highlightEl.classList.add('playing'); playingCard = highlightEl; }
+
+  utter.onend = () => { if(highlightEl) highlightEl.classList.remove('playing'); };
+  utter.onerror = () => { if(highlightEl) highlightEl.classList.remove('playing'); };
+  speechSynthesis.speak(utter);
+}
+
+/* ---------------- Search matching ---------------- */
+
+const SYN_CLUSTERS = [
+  ['mercy','merciful','compassion','compassionate','gracious','grace','kind','kindness','clement'],
+  ['forgive','forgiving','forgiver','forgiveness','pardon','pardoner','relenting'],
+  ['power','powerful','might','mighty','strength','strong','capable','potent','dominant','subdue','subduer'],
+  ['knowledge','knowing','know','aware','awareness','wise','wisdom','omniscient'],
+  ['justice','just','equitable','judge','arbiter','fair'],
+  ['peace','security','safe','secure'],
+  ['king','sovereign','sovereignty','dominion','owner','master','governor','patron','rule','ruler'],
+  ['create','creator','maker','fashion','originator','originate','evolve','producer','initiator','shape'],
+  ['provide','provider','sustain','sustainer','nourish','nourisher','enrich','enricher'],
+  ['protect','protector','guard','guardian','preserve','preserver','watchful','shield','defend','defender'],
+  ['patience','patient','forbear','forbearing'],
+  ['love','loving','beloved','affection'],
+  ['light','illuminate','radiance'],
+  ['truth','true','real','reality'],
+  ['first','beginning','origin'],
+  ['last','end','ending','everlasting','immutable','enduring','eternal'],
+  ['hidden','manifest','unseen','evident','apparent','visible'],
+  ['life','living','alive'],
+  ['death','die','destroy','destroyer'],
+  ['majesty','majestic','glory','glorious','magnificent','great','greatness','exalted','sublime','noble'],
+  ['generous','generosity','bounty','bountiful','noble'],
+  ['grateful','gratitude','appreciate','appreciative'],
+  ['trust','trustee','dependable','advocate','reliance'],
+  ['one','unique','indivisible','singular'],
+  ['honor','honour','dishonor','disgrace'],
+  ['hear','hearing','listen'],
+  ['see','seeing','sight','vision'],
+  ['responsive','respond','answer','answerer'],
+  ['avenge','avenger','vengeance','punish','punisher'],
+  ['repent','repentance'],
+  ['independent','self-sufficient','rich','wealthy'],
+  ['exalt','exalted','high','sublime','raise','elevate'],
+  ['humble','humiliate','abase','lower','demean'],
+  ['witness','testify','testimony'],
+  ['reckon','account','count','enumerate','calculate'],
+  ['gather','unite','unifier','collect'],
+  ['resurrect','resurrection','revive'],
+  ['give','giver','bestow','grant'],
+  ['withhold','restrain','prevent','preventer'],
+  ['expand','extend','enlarge','extender'],
+  ['subtle','gentle','delicate','fine'],
+  ['guide','guidance','teacher','direct'],
+  ['near','close'],
+  ['delay','postpone'],
+  ['advance','forward','expedite'],
+];
+const CLUSTER_INDEX = {};
+SYN_CLUSTERS.forEach(cluster => cluster.forEach(w => { CLUSTER_INDEX[w] = cluster; }));
+
+function stem(word){ return word.length > 4 ? word.slice(0,4) : word; }
+
+function stripDiacritics(str){
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/ee/g, 'i')
+    .replace(/oo/g, 'u')
+    .replace(/aa/g, 'a');
+}
+
+function tokenMatches(token, hayWords){
+  const directHit = token.length <= 3
+    ? hayWords.includes(token)
+    : hayWords.some(w => w.includes(token));
+  if(directHit) return true;
+  const cluster = CLUSTER_INDEX[token];
+  if(cluster && cluster.some(cw => hayWords.includes(cw))) return true;
+  const qStem = stem(token);
+  if(qStem.length >= 4 && hayWords.some(w => w.startsWith(qStem))) return true;
+  return false;
+}
+
+function matchesTab(index){
+  if(currentTab === 'all') return true;
+  if(currentTab === 'favorites') return favorites.has(NAMES[index][0]);
+  return CATEGORY_OF[index] === currentTab;
+}
+
+function getFilteredIndices(query){
+  const q = stripDiacritics((query || '').trim().toLowerCase());
+  const tokens = q.split(/\s+/).filter(Boolean);
+  const out = [];
+  NAMES.forEach((entry, i) => {
+    if(!matchesTab(i)) return;
+    if(tokens.length){
+      const [translit, arabic, meaning] = entry;
+      const hay = stripDiacritics((translit + ' ' + meaning).toLowerCase());
+      const hayWords = hay.split(/[^a-z']+/).filter(Boolean);
+      if(!tokens.every(t => tokenMatches(t, hayWords))) return;
+    }
+    out.push(i);
+  });
+  return out;
+}
+
+/* ---------------- Tabs ---------------- */
+
+function renderTabs(){
+  tabsRow.innerHTML = '';
+  CATEGORY_META.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (cat.key === currentTab ? ' active' : '');
+    btn.textContent = cat.key === 'favorites' ? `${cat.label} (${favorites.size})` : cat.label;
+    btn.addEventListener('click', () => {
+      currentTab = cat.key;
+      renderTabs();
+      if(mode === 'browse') render(searchBox.value); else buildDeck();
+    });
+    tabsRow.appendChild(btn);
+  });
+}
+
+/* ---------------- Browse grid ---------------- */
+
+function starSvg(){
+  return '<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>';
+}
+
+function render(filter){
+  const indices = getFilteredIndices(filter);
+  grid.innerHTML = '';
+
+  indices.forEach(i => {
+    const [translit, arabic, meaning] = NAMES[i];
+    const isFav = favorites.has(translit);
+
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.setAttribute('role','button');
+    card.setAttribute('tabindex','0');
+    card.setAttribute('aria-label', `Play pronunciation of ${translit}`);
+
+    card.innerHTML = `
+      <span class="num">${String(i+1).padStart(2,'0')}</span>
+      <button class="icon-btn star-icon${isFav ? ' active' : ''}" aria-label="Toggle favorite">${starSvg()}</button>
+      <button class="icon-btn play-icon" aria-label="Play pronunciation"><svg viewBox="0 0 12 12"><path d="M1 1l10 5-10 5V1z"/></svg></button>
+      <div class="ar">${arabic}</div>
+      <div class="translit">${translit}</div>
+      <div class="meaning">${meaning}</div>
+    `;
+    const trigger = () => speak(arabic, card);
+    card.addEventListener('click', trigger);
+    card.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); trigger(); }
+    });
+    card.querySelector('.star-icon').addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleFavorite(translit);
+    });
+    grid.appendChild(card);
+  });
+
+  countRow.textContent = `Showing ${indices.length} of 99`;
+  emptyState.style.display = indices.length === 0 ? 'block' : 'none';
+  grid.style.display = indices.length === 0 ? 'none' : 'grid';
+}
+
+searchBox.addEventListener('input', (e) => {
+  if(mode === 'browse') render(e.target.value); else buildDeck();
+});
+
+/* ---------------- Flashcards ---------------- */
+
+const fcInner = document.getElementById('fcInner');
+const fcAr = document.getElementById('fcAr');
+const fcTranslit = document.getElementById('fcTranslit');
+const fcMeaning = document.getElementById('fcMeaning');
+const fcGrading = document.getElementById('fcGrading');
+const fcEmpty = document.getElementById('fcEmpty');
+const fcDone = document.getElementById('fcDone');
+const deckMeta = document.getElementById('deckMeta');
+const flashcardEl = document.querySelector('.flashcard');
+
+let deck = [];
+let knownCount = 0;
+let deckTotal = 0;
+let flipped = false;
+
+function shuffleArray(arr){
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function buildDeck(){
+  const indices = getFilteredIndices(searchBox.value);
+  deck = shuffleArray([...indices]);
+  deckTotal = deck.length;
+  knownCount = 0;
+  flipped = false;
+  showCurrentCard();
+}
+
+function refreshFlashcardStar(){
+  if(deck.length === 0) return;
+  const [translit] = NAMES[deck[0]];
+  const isFav = favorites.has(translit);
+  document.getElementById('fcStarFront').classList.toggle('active', isFav);
+  document.getElementById('fcStarBack').classList.toggle('active', isFav);
+}
+
+function showCurrentCard(){
+  fcInner.classList.remove('flipped');
+  flipped = false;
+  fcGrading.style.display = 'none';
+
+  if(deckTotal === 0){
+    flashcardEl.style.display = 'none';
+    fcEmpty.style.display = 'block';
+    fcDone.style.display = 'none';
+    deckMeta.textContent = '';
+    return;
+  }
+
+  if(deck.length === 0){
+    flashcardEl.style.display = 'none';
+    fcEmpty.style.display = 'none';
+    fcDone.style.display = 'block';
+    fcDone.innerHTML = `<strong>Deck complete</strong>You marked all ${deckTotal} card${deckTotal === 1 ? '' : 's'} as known. Restart to go again.`;
+    deckMeta.textContent = '';
+    return;
+  }
+
+  flashcardEl.style.display = 'block';
+  fcEmpty.style.display = 'none';
+  fcDone.style.display = 'none';
+
+  const [translit, arabic, meaning] = NAMES[deck[0]];
+  fcAr.textContent = arabic;
+  fcTranslit.textContent = translit;
+  fcMeaning.textContent = meaning;
+  refreshFlashcardStar();
+
+  const tabLabel = CATEGORY_META.find(c => c.key === currentTab).label;
+  deckMeta.textContent = `${tabLabel} · ${knownCount} known · ${deck.length} remaining`;
+}
+
+fcInner.addEventListener('click', (e) => {
+  if(e.target.closest('.fc-speak') || e.target.closest('.fc-star')) return;
+  if(deck.length === 0) return;
+  flipped = !flipped;
+  fcInner.classList.toggle('flipped', flipped);
+  fcGrading.style.display = flipped ? 'flex' : 'none';
+});
+
+document.getElementById('fcSpeakBack').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if(deck.length) speak(NAMES[deck[0]][1], null);
+});
+document.getElementById('fcStarFront').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if(deck.length) toggleFavorite(NAMES[deck[0]][0]);
+});
+document.getElementById('fcStarBack').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if(deck.length) toggleFavorite(NAMES[deck[0]][0]);
+});
+
+document.getElementById('btnKnow').addEventListener('click', () => {
+  if(deck.length === 0) return;
+  deck.shift();
+  knownCount++;
+  showCurrentCard();
+});
+document.getElementById('btnLearning').addEventListener('click', () => {
+  if(deck.length === 0) return;
+  const card = deck.shift();
+  deck.push(card);
+  showCurrentCard();
+});
+document.getElementById('btnShuffle').addEventListener('click', () => {
+  shuffleArray(deck);
+  showCurrentCard();
+});
+document.getElementById('btnRestart').addEventListener('click', buildDeck);
+
+/* ---------------- Mode switching ---------------- */
+
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    mode = btn.dataset.mode;
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b === btn));
+    if(mode === 'browse'){
+      browseView.style.display = 'block';
+      flashView.style.display = 'none';
+      render(searchBox.value);
+    } else {
+      browseView.style.display = 'none';
+      flashView.style.display = 'block';
+      buildDeck();
+    }
+  });
+});
+
+/* ---------------- Init ---------------- */
+
+renderTabs();
+render('');
+loadFavorites();
+</script>
+</body>
+</html>
